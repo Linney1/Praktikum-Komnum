@@ -1,0 +1,2 @@
+# Praktikum-Komnum
+Galvano operations
