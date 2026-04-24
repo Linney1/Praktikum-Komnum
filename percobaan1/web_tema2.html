@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Metode Bolzano</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1/dist/chartjs-plugin-zoom.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #0a0e1a;
+      --surface: #111827;
+      --surface2: #1a2235;
+      --accent: #38bdf8;
+      --accent2: #818cf8;
+      --accent3: #34d399;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --border: rgba(56,189,248,0.15);
+      --glow: rgba(56,189,248,0.25);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 32px 20px;
+      background-image:
+        radial-gradient(ellipse 60% 40% at 70% 10%, rgba(56,189,248,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 30% at 10% 80%, rgba(129,140,248,0.06) 0%, transparent 50%);
+    }
+    .header { text-align: center; margin-bottom: 36px; }
+    .header .badge {
+      display: inline-block;
+      background: rgba(56,189,248,0.12);
+      border: 1px solid rgba(56,189,248,0.3);
+      color: var(--accent);
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #e2e8f0 30%, var(--accent) 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+    }
+    .subtitle { color: var(--muted); font-size: 0.95rem; margin-top: 8px; font-weight: 300; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    }
+    .card-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title::before {
+      content: '';
+      display: inline-block;
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent);
+    }
+    .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .input-group { display: flex; flex-direction: column; gap: 6px; }
+    .input-group.full { grid-column: 1 / -1; }
+    label { font-size: 0.78rem; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+    input[type="text"], input[type="number"] {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.88rem;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+    input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow); }
+    .btn {
+      display: block; width: 100%; margin-top: 20px; padding: 13px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none; border-radius: 12px; color: #fff;
+      font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 700;
+      cursor: pointer; letter-spacing: 0.5px;
+      transition: opacity 0.2s, transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(56,189,248,0.25);
+    }
+    .btn:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 6px 28px rgba(56,189,248,0.35); }
+    .btn:active { transform: translateY(0); }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-family: 'Space Mono', monospace; font-size: 0.82rem; }
+    thead th {
+      background: rgba(56,189,248,0.1); color: var(--accent);
+      padding: 11px 16px; text-align: center;
+      border-bottom: 1px solid var(--border);
+      letter-spacing: 1px; font-size: 0.72rem; text-transform: uppercase;
+    }
+    tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.15s; }
+    tbody tr:hover { background: rgba(56,189,248,0.05); }
+    tbody tr:last-child { background: rgba(52,211,153,0.07); border-bottom: 1px solid rgba(52,211,153,0.2); }
+    tbody tr:last-child td { color: var(--accent3); }
+    td { padding: 10px 16px; text-align: center; color: var(--text); }
+    td:first-child { color: var(--accent2); font-weight: 700; }
+
+    .chart-wrap { position: relative; height: 340px; }
+
+    /* Toolbar zoom/pan */
+    .chart-toolbar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .tool-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.82rem;
+      padding: 7px 14px;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .tool-btn:hover { background: rgba(56,189,248,0.12); border-color: var(--accent); color: var(--accent); }
+    .tool-btn.active { background: rgba(56,189,248,0.18); border-color: var(--accent); color: var(--accent); }
+    .tool-sep { width: 1px; height: 28px; background: var(--border); margin: 0 4px; }
+    .hint {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-left: auto;
+      font-style: italic;
+    }
+
+    .result-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(52,211,153,0.1);
+      border: 1px solid rgba(52,211,153,0.3);
+      border-radius: 100px; padding: 8px 18px;
+      font-family: 'Space Mono', monospace; font-size: 0.85rem;
+      color: var(--accent3); margin-bottom: 16px;
+    }
+    .result-chip span { color: var(--muted); font-size: 0.75rem; }
+    #result-area { display: none; }
+    #result-area.show { display: block; }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <div class="badge">Numerical Methods</div>
+  <h1>Metode Bolzano<br>Bisection Method</h1>
+  <p class="subtitle">Root-finding algorithm via interval halving</p>
+</div>
+
+<div class="card">
+  <div class="card-title">Parameter Input</div>
+  <div class="input-grid">
+    <div class="input-group full">
+      <label>Fungsi f(x)</label>
+      <input type="text" id="func" value="x*x*x - 3*x + 1">
+    </div>
+    <div class="input-group">
+      <label>Batas Bawah (a)</label>
+      <input type="number" id="a" value="1" step="any">
+    </div>
+    <div class="input-group">
+      <label>Batas Atas (b)</label>
+      <input type="number" id="b" value="2" step="any">
+    </div>
+    <div class="input-group full">
+      <label>Jumlah Iterasi</label>
+      <input type="number" id="n" value="5" min="1" max="50">
+    </div>
+  </div>
+  <button class="btn" onclick="hitung()">▶ Hitung Akar</button>
+</div>
+
+<div id="result-area">
+  <div class="card">
+    <div class="card-title">Hasil Akar</div>
+    <div id="root-chip"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Tabel Iterasi</div>
+    <div class="table-wrap" id="output"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Grafik Interaktif f(x)</div>
+
+    <div class="chart-toolbar">
+      <button class="tool-btn" id="btn-zoom-in" onclick="zoomIn()" title="Zoom In">🔍+ Zoom In</button>
+      <button class="tool-btn" id="btn-zoom-out" onclick="zoomOut()" title="Zoom Out">🔍− Zoom Out</button>
+      <div class="tool-sep"></div>
+      <button class="tool-btn active" id="btn-pan" onclick="setMode('pan')" title="Pan">✋ Pan</button>
+      <button class="tool-btn" id="btn-zoom-drag" onclick="setMode('zoom')" title="Zoom Drag">⬚ Zoom Area</button>
+      <div class="tool-sep"></div>
+      <button class="tool-btn" onclick="resetZoom()" title="Reset">↺ Reset</button>
+      <span class="hint">🖱️ scroll = zoom · drag = geser</span>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="chart"></canvas>
+    </div>
+  </div>
+</div>
+
+<script>
+function parseFunction(expr) {
+  return function(x) {
+    try { return eval(expr); } catch { return NaN; }
+  };
+}
+
+let currentMode = 'pan';
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('btn-pan').classList.toggle('active', mode === 'pan');
+  document.getElementById('btn-zoom-drag').classList.toggle('active', mode === 'zoom');
+  if (window._chart) {
+    window._chart.options.plugins.zoom.zoom.drag.enabled = (mode === 'zoom');
+    window._chart.options.plugins.zoom.zoom.wheel.enabled = true;
+    window._chart.options.plugins.zoom.pan.enabled = (mode === 'pan');
+    window._chart.update();
+  }
+}
+
+function zoomIn() {
+  if (window._chart) window._chart.zoom(1.3);
+}
+
+function zoomOut() {
+  if (window._chart) window._chart.zoom(0.77);
+}
+
+function resetZoom() {
+  if (window._chart) window._chart.resetZoom();
+}
+
+function hitung() {
+  let expr = document.getElementById("func").value;
+  let f = parseFunction(expr);
+  let a = parseFloat(document.getElementById("a").value);
+  let b = parseFloat(document.getElementById("b").value);
+  let n = parseInt(document.getElementById("n").value);
+
+  let output = `<table><thead><tr>
+    <th>Iter</th><th>a</th><th>b</th><th>xr</th><th>f(xr)</th>
+  </tr></thead><tbody>`;
+
+  let xr;
+  let titikIterasi = [];
+
+  for (let i = 1; i <= n; i++) {
+    xr = (a + b) / 2;
+    let fxr = f(xr);
+    titikIterasi.push({ x: xr, y: fxr });
+    output += `<tr>
+      <td>${i}</td>
+      <td>${a.toFixed(6)}</td>
+      <td>${b.toFixed(6)}</td>
+      <td>${xr.toFixed(6)}</td>
+      <td>${fxr.toFixed(6)}</td>
+    </tr>`;
+    if (f(a) * fxr < 0) b = xr;
+    else a = xr;
+  }
+
+  output += "</tbody></table>";
+  document.getElementById("output").innerHTML = output;
+
+  document.getElementById("root-chip").innerHTML = `
+    <div class="result-chip"><span>Akar ≈</span> x = ${xr.toFixed(8)}</div>`;
+  document.getElementById("result-area").classList.add("show");
+
+  // Build curve data
+  let data = [];
+  let xr_last = xr;
+  let aOrig = parseFloat(document.getElementById("a").value);
+  let bOrig = parseFloat(document.getElementById("b").value);
+  let range = Math.abs(bOrig - aOrig);
+  let xStart = xr_last - range * 4;
+  let xEnd   = xr_last + range * 4;
+  if (range < 0.01) { xStart -= 1.5; xEnd += 1.5; }
+  let step = (xEnd - xStart) / 400;
+
+  let yMin = Infinity, yMax = -Infinity;
+  for (let x = xStart; x <= xEnd; x += step) {
+    let y = f(x);
+    if (isFinite(y)) {
+      data.push({ x, y });
+      yMin = Math.min(yMin, y); yMax = Math.max(yMax, y);
+    }
+  }
+  titikIterasi.forEach(p => { yMin = Math.min(yMin, p.y); yMax = Math.max(yMax, p.y); });
+
+  let ctx = document.getElementById("chart");
+  if (window._chart instanceof Chart) window._chart.destroy();
+
+  window._chart = new Chart(ctx, {
+    type: "line",
+    data: {
+      datasets: [
+        {
+          label: "f(x)",
+          data,
+          borderColor: "#38bdf8",
+          borderWidth: 2.5,
+          fill: false,
+          pointRadius: 0,
+          tension: 0.2
+        },
+        {
+          label: "Titik Iterasi",
+          data: titikIterasi,
+          pointRadius: 6,
+          pointBackgroundColor: titikIterasi.map((_, i) => `hsl(${200 + i * 20}, 80%, 65%)`),
+          pointBorderColor: 'rgba(0,0,0,0.3)',
+          pointBorderWidth: 1,
+          showLine: false
+        },
+        {
+          label: "Akar",
+          data: [{ x: xr_last, y: f(xr_last) }],
+          pointRadius: 10,
+          pointBackgroundColor: "#34d399",
+          pointBorderColor: "#fff",
+          pointBorderWidth: 2,
+          showLine: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      parsing: false,
+      animation: { duration: 400 },
+      plugins: {
+        legend: {
+          labels: { color: "#94a3b8", font: { family: "'Outfit', sans-serif", size: 12 }, boxWidth: 12 }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` (${ctx.parsed.x.toFixed(4)}, ${ctx.parsed.y.toFixed(4)})`
+          }
+        },
+        zoom: {
+          pan: {
+            enabled: true,
+            mode: 'xy',
+            threshold: 5,
+          },
+          zoom: {
+            wheel: { enabled: true, speed: 0.1 },
+            pinch: { enabled: true },
+            drag: { enabled: false, backgroundColor: 'rgba(56,189,248,0.1)', borderColor: 'rgba(56,189,248,0.5)', borderWidth: 1 },
+            mode: 'xy',
+          },
+          limits: {
+            x: { min: xStart - 2, max: xEnd + 2 },
+            y: { min: yMin - 3, max: yMax + 3 }
+          }
+        }
+      },
+      scales: {
+        x: {
+          type: "linear",
+          title: { display: true, text: "x", color: "#64748b" },
+          grid: { color: "rgba(255,255,255,0.05)" },
+          ticks: { color: "#64748b", font: { family: "'Space Mono'" } }
+        },
+        y: {
+          min: yMin - 0.5,
+          max: yMax + 0.5,
+          title: { display: true, text: "f(x)", color: "#64748b" },
+          grid: { color: "rgba(255,255,255,0.05)" },
+          ticks: { color: "#64748b", font: { family: "'Space Mono'" } }
+        }
+      }
+    }
+  });
+}
+
+hitung();
+</script>
+</body>
+</html>
