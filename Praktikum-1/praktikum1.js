@@ -1,7 +1,7 @@
-function parseFunction(expr) {
+function ubahFungsi(rumus) {
   return function(x) {
     try {
-      return eval(expr);
+      return eval(rumus);
     } catch {
       return NaN;
     }
@@ -9,36 +9,37 @@ function parseFunction(expr) {
 }
 
 function hitung() {
-  let expr = document.getElementById("func").value;
-  let f = parseFunction(expr);
+  let rumus = document.getElementById("fungsi").value;
+  let func = ubahFungsi(rumus);
 
-  let a = parseFloat(document.getElementById("a").value);
-  let b = parseFloat(document.getElementById("b").value);
-  let n = parseInt(document.getElementById("n").value);
+  let x1 = parseFloat(document.getElementById("x1").value);
+  let x2 = parseFloat(document.getElementById("x2").value);
+  let iteration = parseInt(document.getElementById("iteration").value);
+  let decimalNum = parseInt(document.getElementById("decimalNum").value);
 
-  let output = "<table><tr><th>Iterasi</th><th>a</th><th>b</th><th>xr</th><th>f(xr)</th></tr>";
+  let output = "<table><tr><th>Iterasi</th><th>x1</th><th>x2</th><th>x3</th><th>f(x3)</th></tr>";
 
-  let xr;
+  let x3;
   let titikIterasi = [];
 
-  for (let i = 1; i <= n; i++) {
-    xr = (a + b) / 2;
-    let fxr = f(xr);
+  for (let i = 1; i <= iteration; i++) {
+    x3 = (x1 * func(x2) - x2 * func(x1)) / (func(x2) - func(x1));
+    let funcx3 = func(x3);
 
-    titikIterasi.push({ x: xr, y: fxr });
+    titikIterasi.push({ x: x3, y: funcx3 });
 
     output += `<tr>
       <td>${i}</td>
-      <td>${a.toFixed(4)}</td>
-      <td>${b.toFixed(4)}</td>
-      <td>${xr.toFixed(4)}</td>
-      <td>${fxr.toFixed(4)}</td>
+      <td>${x1.toFixed(decimalNum)}</td>
+      <td>${x2.toFixed(decimalNum)}</td>
+      <td>${x3.toFixed(decimalNum)}</td>
+      <td>${funcx3.toFixed(decimalNum)}</td>
     </tr>`;
 
-    if (f(a) * fxr < 0) {
-      b = xr;
+    if (func(x1) * func(x3) < 0) {
+      x2 = x3;
     } else {
-      a = xr;
+      x1 = x3;
     }
   }
 
@@ -48,11 +49,11 @@ function hitung() {
   // GRAFIK 
   let data = [];
 
-  let xr_last = xr;
-  let range = Math.abs(b - a);
+  let x3_last = x3;
+  let range = Math.abs(x2 - x1);
 
-  let xStart = xr_last - range * 3;
-  let xEnd = xr_last + range * 3;
+  let xStart = x3_last - range * 3;
+  let xEnd = x3_last + range * 3;
 
   if (range < 0.01) {
     xStart -= 1;
@@ -64,9 +65,9 @@ function hitung() {
   let yMin = Infinity;
   let yMax = -Infinity;
 
-  // kurva
+  // KURVA
   for (let x = xStart; x <= xEnd; x += step) {
-    let y = f(x);
+    let y = func(x);
     if (isFinite(y)) {
       data.push({ x: x, y: y });
       yMin = Math.min(yMin, y);
@@ -91,7 +92,7 @@ function hitung() {
     data: {
       datasets: [
         {
-          label: "f(x)",
+          label: "func(x)",
           data: data,
           borderWidth: 2,
           fill: false,
@@ -111,7 +112,7 @@ function hitung() {
 
         {
           label: "Akar (xr terakhir)",
-          data: [{ x: xr_last, y: f(xr_last) }],
+          data: [{ x: x3_last, y: func(x3_last) }],
           pointRadius: 8,
           pointBackgroundColor: "red",
           showLine: false
