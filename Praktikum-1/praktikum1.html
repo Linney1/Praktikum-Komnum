@@ -1,34 +1,55 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Metode Bolzano (Bisection)</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Praktikum Komputasi Numerik</title>
+    <link rel="stylesheet" href="praktikum1.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
+    
+    <div class="header">
+        <h1>Praktikum Komputasi Numerik</h1>
+        <h2>Kelompok 7</h2>
+        <h3>
+            <p>I Dewa Gede Putra Susila</p>
+            <p>I Dewa Gede Putra Susila</p>
+            <p>I Dewa Gede Putra Susila</p>
+        </h3>
+    </div>
+    
 
-<h2>Metode Regula Falsi</h2>
+    <div class="input">
+        <label for="func">f(x):</label>
+        <input type="text" class="fullbutton" id="func"><br>
 
-<label>Fungsi f(x):</label>
-<input type="text" id="fungsi" value=""><br>
-<label>a:</label>
-<input type="number" id="x1" value="">
-<label>b:</label>
-<input type="number" id="x2" value="">
-<label>Iterasi:</label>
-<input type="number" id="iteration" value="">
-<label>Angka belakang koma:</label>
-<input type="number" id="decimalNum" value="">
+        <label for="x1">x<sub>1</sub>:</label>
+        <input type="number" class="halfbutton" id="x1">
 
-<br>
-<button onclick="hitung()">Hitung</button>
+        <label for="x2">x<sub>2</sub>:</label>
+        <input type="number" class="halfbutton" id="x2">
 
-<div id="output"></div>
+        <label for="iterasi">Iterasi:</label>
+        <input type="number" class="halfbutton" id="iterasi">
 
-<canvas id="chart" width="600" height="300"></canvas>
+        <label for="presisi">Presisi:</label>
+        <input type="number" class="halfbutton" id="presisi"><br>
 
-<script src="praktikum1.js"></script>
+        <label for="rumus">Rumus yang ingin digunakan</label>
+        <select name="rumus" class="fullbutton" id="rumus">
+            <option value="regula-falsi">Metode Regula Falsi</option>
+            <option value="secant">Metode Secant</option>
+        </select><br>
+
+        <button onclick="hitung()" class="fullbutton" id="hitung">Hitung</button>
+    </div>
+
+    <div id="tabel"></div>
+
+    <canvas id="grafik"></canvas>
+
+    <script src="praktikum1.js"></script>
 
 </body>
 </html>

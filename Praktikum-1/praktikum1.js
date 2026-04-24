@@ -1,140 +1,161 @@
-function ubahFungsi(rumus) {
-  return function(x) {
-    try {
-      return eval(rumus);
-    } catch {
-      return NaN;
-    }
-  };
-}
-
 function hitung() {
-  let rumus = document.getElementById("fungsi").value;
-  let func = ubahFungsi(rumus);
 
-  let x1 = parseFloat(document.getElementById("x1").value);
-  let x2 = parseFloat(document.getElementById("x2").value);
-  let iteration = parseInt(document.getElementById("iteration").value);
-  let decimalNum = parseInt(document.getElementById("decimalNum").value);
-
-  let output = "<table><tr><th>Iterasi</th><th>x1</th><th>x2</th><th>x3</th><th>f(x3)</th></tr>";
-
-  let x3;
-  let titikIterasi = [];
-
-  for (let i = 1; i <= iteration; i++) {
-    x3 = (x1 * func(x2) - x2 * func(x1)) / (func(x2) - func(x1));
-    let funcx3 = func(x3);
-
-    titikIterasi.push({ x: x3, y: funcx3 });
-
-    output += `<tr>
-      <td>${i}</td>
-      <td>${x1.toFixed(decimalNum)}</td>
-      <td>${x2.toFixed(decimalNum)}</td>
-      <td>${x3.toFixed(decimalNum)}</td>
-      <td>${funcx3.toFixed(decimalNum)}</td>
-    </tr>`;
-
-    if (func(x1) * func(x3) < 0) {
-      x2 = x3;
-    } else {
-      x1 = x3;
-    }
-  }
-
-  output += "</table>";
-  document.getElementById("output").innerHTML = output;
-
-  // GRAFIK 
-  let data = [];
-
-  let x3_last = x3;
-  let range = Math.abs(x2 - x1);
-
-  let xStart = x3_last - range * 3;
-  let xEnd = x3_last + range * 3;
-
-  if (range < 0.01) {
-    xStart -= 1;
-    xEnd += 1;
-  }
-
-  let step = (xEnd - xStart) / 200;
-
-  let yMin = Infinity;
-  let yMax = -Infinity;
-
-  // KURVA
-  for (let x = xStart; x <= xEnd; x += step) {
-    let y = func(x);
-    if (isFinite(y)) {
-      data.push({ x: x, y: y });
-      yMin = Math.min(yMin, y);
-      yMax = Math.max(yMax, y);
-    }
-  }
-
-  // titik iterasi masuk range
-  titikIterasi.forEach(p => {
-    yMin = Math.min(yMin, p.y);
-    yMax = Math.max(yMax, p.y);
-  });
-
-  let ctx = document.getElementById("chart");
-
-  if (window.chart instanceof Chart) {
-    window.chart.destroy();
-  }
-
-  window.chart = new Chart(ctx, {
-    type: "line",
-    data: {
-      datasets: [
-        {
-          label: "func(x)",
-          data: data,
-          borderWidth: 2,
-          fill: false,
-          pointRadius: 0
-        },
-
-        // titik iterasi jelas & beda warna
-        {
-          label: "Titik Iterasi",
-          data: titikIterasi,
-          pointRadius: 6,
-          pointBackgroundColor: titikIterasi.map((_, i) => 
-            `hsl(${i * 60}, 70%, 50%)`
-          ),
-          showLine: false
-        },
-
-        {
-          label: "Akar (xr terakhir)",
-          data: [{ x: x3_last, y: func(x3_last) }],
-          pointRadius: 8,
-          pointBackgroundColor: "red",
-          showLine: false
+    //PEMBUATAN TABEL
+    let func = document.getElementById("func").value;
+    let f = function(x) {
+        try {
+            return eval(func);
+        } catch { 
+            return NaN;
         }
-      ]
-    },
-    options: {
-      responsive: true,
-      parsing: false,
-      scales: {
-        x: {
-          type: "linear",
-          title: { display: true, text: "x" }
-        },
-        y: {
-          min: yMin - 0.5,
-          max: yMax + 0.5,
-          title: { display: true, text: "f(x)" }
-        }
-      }
+    };
+
+    let rumus = document.getElementById("rumus").value;    
+    let x1 = parseFloat(document.getElementById("x1").value);
+    let x2 = parseFloat(document.getElementById("x2").value);
+    let iterasi = parseInt(document.getElementById("iterasi").value);
+    let presisi = parseInt(document.getElementById("presisi").value);
+
+    //INISIALISASI TABEL
+    let tabel;
+    if(rumus == "regula-falsi") {
+        tabel = 
+            `<table>
+                <tr>
+                    <th>Iterasi</th>
+                    <th>x<sub>1</sub></th>
+                    <th>x<sub>2</sub></th>
+                    <th>x<sub>3</sub></th>
+                    <th>f(x<sub>1</sub>)</th>
+                    <th>f(x<sub>2</sub>)</th>
+                    <th>f(x<sub>3</sub>)</th>
+                    <th>E<sub>r</sub></th>
+                </tr>`;
+    } else if(rumus == 'secant') {
+        tabel =
+            `<table>
+                <tr>
+                    <th>Iterasi</th>
+                    <th>x<sub>i-1</sub></th>
+                    <th>x<sub>i</sub></th>
+                    <th>x<sub>i+1</sub></th>
+                    <th>E<sub>r</sub></th>
+                </tr>`;
     }
-  });
+                
+    //MENGISI TABEL DENGAN DATA
+    let x3, er;
+    for(let i = 1; i <= iterasi; i++) {
+
+        if(rumus == "regula-falsi") {
+            
+            x3 = (x1 * f(x2) - x2 * f(x1)) / (f(x2) - f(x1));
+
+            tabel += 
+                `<tr>
+                    <td>${i}</td>
+                    <td>${x1.toFixed(presisi)}</td>
+                    <td>${x2.toFixed(presisi)}</td>
+                    <td>${x3.toFixed(presisi)}</td>
+                    <td>${f(x1).toFixed(presisi)}</td>
+                    <td>${f(x2).toFixed(presisi)}</td>
+                    <td>${f(x3).toFixed(presisi)}</td>`;
+
+            if(f(x3) * f(x1) < 0) {
+                er = Math.abs((x3 - x2) / x3) * 100; //error relatif
+                x2 = x3;
+            } else {
+                er = Math.abs((x3 - x1) / x3) * 100;
+                x1 = x3;
+            }
+
+            tabel +=
+                    `<td>${er.toFixed(2)}%</td>
+                </tr>`;
+        } else if (rumus == "secant") {
+            x3 = x2 - (f(x2) * (x1 - x2)) / (f(x1) - f(x2));
+
+            tabel +=
+                `<tr>
+                    <td>${i}</td>
+                    <td>${x1.toFixed(presisi)}</td>
+                    <td>${x2.toFixed(presisi)}</td>
+                    <td>${x3.toFixed(presisi)}</td>`;
+
+            er = Math.abs((x3 - x2) / x3) * 100;       
+            x1 = x2;
+            x2 = x3;
+
+            tabel +=
+                    `<td>${er.toFixed(2)}%</td>
+                </tr>`;
+        }
+    }
+
+    //MENAMPILKAN TABEL
+    tabel += `</table>`;
+    document.getElementById("tabel").innerHTML = tabel;
+    
+    //PEMBUATAN BATAS GRAFIK
+    let rentang = Math.abs(x2 - x1);
+    let batasKiri = x3 - rentang * 3; //xMin
+    let batasKanan = x3 + rentang * 3; //xMax
+
+    if (rentang < 1) {
+        batasKiri -= 1;
+        batasKanan += 1;
+    }
+
+    let detail = (batasKanan - batasKiri) / 200; //detail atau kehalusan garis grafik
+
+    let batasBawah = Infinity; //yMin
+    let batasAtas = -Infinity; // yMax
+
+    //PEMBUATAN KURVA atau GARIS GRAFIK
+    let dataGrafik = [];
+    for(let x = batasKiri; x <= batasKanan; x += detail) {
+        let y = f(x);
+        if(isFinite(y)) {
+            dataGrafik.push({x: x, y: y});
+            if(batasBawah > y) batasBawah = y;
+            if(batasAtas < y) batasAtas = y;
+        }
+    }
+
+    //TAMPILKAN GRAFIK DENGAN CHART.JS
+    let ctx = document.getElementById("grafik");
+
+    if (window.chart instanceof Chart) { //hapus grafik lama
+        window.chart.destroy();
+    }
+
+    window.chart = new Chart(ctx, {
+        type: "line",
+        data: {
+            datasets: [{
+                label:"f(x)",
+                data: dataGrafik,
+                borderWidth: 2,
+                fill: false,
+                pointRadius: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            parsing: false,
+            scales: {
+                x: {
+                    type: "linear",
+                    title: { display: true, text: "x" }
+                },
+                y: {
+                    min: batasBawah,
+                    max: batasAtas,
+                    title: { display: true, text: "f(x)" }
+                }
+            }
+        }
+    });
 }
 
 hitung();
