@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,9 @@
     <link rel="stylesheet" href="praktikum1.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
+
 <body>
-    
+
     <div class="header">
         <h1>Praktikum Komputasi Numerik</h1>
         <h2>Kelompok 7</h2>
@@ -18,31 +20,35 @@
             <p>I Dewa Gede Putra Susila</p>
         </h3>
     </div>
-    
+
 
     <div class="input">
         <label for="func">f(x):</label>
-        <input type="text" class="fullbutton" id="func"><br>
+        <input type="text" id="func"> <!-- DIUBAH: hapus class="fullbutton" -->
 
-        <label for="x1">x<sub>1</sub>:</label>
-        <input type="number" class="halfbutton" id="x1">
+        <!-- DITAMBAH: wrapper <div class="row"> untuk x1, x2, iterasi, presisi -->
+        <div class="row">
+            <label for="x1">x<sub>1</sub>:</label>
+            <input type="number" id="x1"> <!-- DIUBAH: hapus class="halfbutton" -->
 
-        <label for="x2">x<sub>2</sub>:</label>
-        <input type="number" class="halfbutton" id="x2">
+            <label for="x2">x<sub>2</sub>:</label>
+            <input type="number" id="x2"> <!-- DIUBAH: hapus class="halfbutton" -->
 
-        <label for="iterasi">Iterasi:</label>
-        <input type="number" class="halfbutton" id="iterasi">
+            <label for="iterasi">Iterasi:</label>
+            <input type="number" id="iterasi"> <!-- DIUBAH: hapus class="halfbutton" -->
 
-        <label for="presisi">Presisi:</label>
-        <input type="number" class="halfbutton" id="presisi"><br>
+            <label for="presisi">Presisi:</label>
+            <input type="number" id="presisi"> <!-- DIUBAH: hapus class="halfbutton" -->
+        </div>
+        <!-- SELESAI: penutup div.row -->
 
-        <label for="rumus">Rumus yang ingin digunakan</label>
-        <select name="rumus" class="fullbutton" id="rumus">
+        <label for="rumus">Rumus:</label> <!-- DIUBAH: teks label dipersingkat, hapus "yang ingin digunakan" -->
+        <select id="rumus"> <!-- DIUBAH: hapus name="rumus" dan class="fullbutton" -->
             <option value="regula-falsi">Metode Regula Falsi</option>
             <option value="secant">Metode Secant</option>
-        </select><br>
+        </select> <!-- DIUBAH: hapus <br> -->
 
-        <button onclick="hitung()" class="fullbutton" id="hitung">Hitung</button>
+        <button onclick="hitung()" id="hitung">Hitung</button> <!-- DIUBAH: hapus class="fullbutton" -->
     </div>
 
     <div id="tabel"></div>
@@ -52,4 +58,5 @@
     <script src="praktikum1.js"></script>
 
 </body>
+
 </html>

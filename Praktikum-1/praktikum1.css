@@ -1,65 +1,123 @@
-    body {
-      font-family: Arial;
-      margin: 100px;
-      background: #080c16;
-      color: white;
-    }
+body {
+  font-family: Arial;
+  margin: 100px;
+  background: #080c16;
+  color: white;
+}
 
-    .header {
-        margin: 50px auto;
-        box-sizing: border-box;
-        text-align: center;
-    }
-    
-    .input {
-        margin-top: 50px;
-        background-color: #111827;
-        border-radius: 15px;
-        height: 300px;
-        display: flex;
-        align-items: center;
-    }
+.header {
+  margin: 50px auto;
+  box-sizing: border-box;
+  text-align: center;
+}
 
-    input, button {
-      margin: 5px;
-      padding: 8px;
-      background-color: #1a2235;
-      color: #b1b9c6;
-    }
+.input {
+  margin-top: 50px;
+  background-color: #111827;
+  border-radius: 15px;
+  padding: 30px 40px;
+  /* ← DIUBAH: ganti height:300px dengan padding agar konten tidak terpotong */
+  display: flex;
+  flex-wrap: wrap;
+  /* ← DITAMBAH: supaya elemen bisa turun ke baris berikutnya */
+  align-items: center;
+  gap: 12px 0;
+  /* ← DITAMBAH: jarak antar baris */
+}
 
-    .input #func {
-        width: 80%;
-        
-    }
+input,
+select,
+button {
+  margin: 5px;
+  padding: 8px;
+  background-color: #1a2235;
+  color: #b1b9c6;
+  border: 1px solid #2a3a55;
+  /* ← DITAMBAH: border tipis supaya input terlihat */
+  border-radius: 6px;
+  /* ← DITAMBAH: sudut membulat konsisten */
+  box-sizing: border-box;
+}
 
-    #tabel {
-        width: 100%;
-        height: auto;
-        display: flex;
-        margin-top: 30px;
-        justify-content: center;
-        background: #111827;
-        border-radius: 15px;
-    }
+label {
+  white-space: nowrap;
+  /* ← DITAMBAH: label tidak terpotong */
+}
 
-    table {
-        border-collapse: collapse;
-        width: 90%;
-        margin-top: 50px;
-        margin-bottom: 50px;
-        background: #111827;
-    }
+/* DIUBAH: ganti class .fullbutton dan .halfbutton via id langsung */
+#func {
+  width: calc(100% - 60px);
+  /* ← DIUBAH: lebar penuh dikurangi lebar label */
+  flex: 1;
+}
 
-    th, td {
-      border-bottom: 1px solid #171e2c;
-      padding: 8px 12px;
-      text-align: center;
-    }
+/* Baris x1, x2, iterasi, presisi sejajar dalam satu baris */
+.input .row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
 
-    canvas {
-      margin-top: 30px;
-      background: #111827;
-      border: white;
-      padding: 10px;
-      border-radius: 10px;
-    }
+.input .row input {
+  width: 80px;
+  /* ← DIUBAH: lebar tetap untuk input angka */
+  flex-shrink: 0;
+}
+
+#rumus {
+  flex: 1;
+  margin: 5px;
+  min-width: 150px;
+}
+
+#hitung {
+  width: 100%;
+  /* ← DIUBAH: tombol hitung full width paling bawah */
+  margin-top: 10px;
+  padding: 10px;
+  cursor: pointer;
+  background-color: #2563eb;
+  /* ← DIUBAH: warna biru supaya tombol menonjol */
+  color: white;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+#hitung:hover {
+  background-color: #1d4ed8;
+  /* ← DITAMBAH: efek hover */
+}
+
+#tabel {
+  width: 100%;
+  height: auto;
+  display: flex;
+  margin-top: 30px;
+  justify-content: center;
+  background: #111827;
+  border-radius: 15px;
+}
+
+table {
+  border-collapse: collapse;
+  width: 90%;
+  margin-top: 50px;
+  margin-bottom: 50px;
+  background: #111827;
+}
+
+th,
+td {
+  border-bottom: 1px solid #171e2c;
+  padding: 8px 12px;
+  text-align: center;
+}
+
+canvas {
+  margin-top: 30px;
+  background: #111827;
+  border: white;
+  padding: 10px;
+  border-radius: 10px;
+}
