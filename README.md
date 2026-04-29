@@ -1,2 +1,3 @@
 # Praktikum-Komnum
-Galvano operations
+- Praktikum PPT 2 & PPT 3
+    Secant Operation
