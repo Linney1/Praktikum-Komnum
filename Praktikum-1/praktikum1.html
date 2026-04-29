@@ -24,31 +24,29 @@
 
     <div class="input">
         <label for="func">f(x):</label>
-        <input type="text" id="func"> <!-- DIUBAH: hapus class="fullbutton" -->
+        <input type="text" id="func">
 
-        <!-- DITAMBAH: wrapper <div class="row"> untuk x1, x2, iterasi, presisi -->
         <div class="row">
-            <label for="x1">x<sub>1</sub>:</label>
-            <input type="number" id="x1"> <!-- DIUBAH: hapus class="halfbutton" -->
+            <label for="x1">x<sub>1</sub>:</label> h
+            <input type="number" id="x1">
 
             <label for="x2">x<sub>2</sub>:</label>
-            <input type="number" id="x2"> <!-- DIUBAH: hapus class="halfbutton" -->
+            <input type="number" id="x2">
 
             <label for="iterasi">Iterasi:</label>
-            <input type="number" id="iterasi"> <!-- DIUBAH: hapus class="halfbutton" -->
+            <input type="number" id="iterasi">
 
             <label for="presisi">Presisi:</label>
-            <input type="number" id="presisi"> <!-- DIUBAH: hapus class="halfbutton" -->
+            <input type="number" id="presisi">
         </div>
-        <!-- SELESAI: penutup div.row -->
 
-        <label for="rumus">Rumus:</label> <!-- DIUBAH: teks label dipersingkat, hapus "yang ingin digunakan" -->
-        <select id="rumus"> <!-- DIUBAH: hapus name="rumus" dan class="fullbutton" -->
+        <label for="rumus">Rumus:</label>
+        <select id="rumus">
             <option value="regula-falsi">Metode Regula Falsi</option>
             <option value="secant">Metode Secant</option>
-        </select> <!-- DIUBAH: hapus <br> -->
-
-        <button onclick="hitung()" id="hitung">Hitung</button> <!-- DIUBAH: hapus class="fullbutton" -->
+        </select>
+        
+        <button onclick="hitung()" id="hitung">Hitung</button>
     </div>
 
     <div id="tabel"></div>
