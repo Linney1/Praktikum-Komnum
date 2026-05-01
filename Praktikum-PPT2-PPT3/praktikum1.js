@@ -1,6 +1,6 @@
 function hitung() {
 
-    //PEMBUATAN TABEL
+    //PENGAMBILAN DATA
     let func = document.getElementById("func").value;
     let f = function(x) {
         try {
