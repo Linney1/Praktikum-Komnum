@@ -1,5 +1,11 @@
-# Praktikum-Komnum
-- Praktikum PPT 2 & PPT 3  
+## Praktikum Komnum - Kelompok 7
+- PPT 2 & 3
+
+|    NRP     |           Nama             |
+| :--------: |       :------------:       |
+| 5025251196 | I Dewa Gede Putra Susila   |
+| 5025251229 | Muhammad Raffy Adika P.R.  |
+| 5025251204 | Althof Rahmatulla          |
 
 ## Penjelasan Singkat
 
