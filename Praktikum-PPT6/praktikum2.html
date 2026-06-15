@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Praktikum Komputasi Numerik</title>
+    <link rel="stylesheet" href="praktikum1.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>Praktikum Komputasi Numerik</h1>
+        <h2>Kelompok 7</h2>
+        <h3>
+            <p>I Dewa Gede Putra Susila - 5025251196</p>
+            <p>Muhammad Raffy Adika P.R. - 5025251229</p>
+            <p>Althof Rahmatullah - 5025251204</p>
+        </h3>
+    </div>
+
+
+    <div class="input">
+        <label for="func">f(x):</label>
+        <input type="text" id="func">
+
+        <div class="row">
+            <label for="x1">x<sub>1</sub>:</label>
+            <input type="number" id="x1">
+
+            <label for="x2">x<sub>2</sub>:</label>
+            <input type="number" id="x2">
+
+            <label for="iterasi">Iterasi:</label>
+            <input type="number" id="iterasi">
+
+            <label for="presisi">Presisi:</label>
+            <input type="number" id="presisi">
+        </div>
+
+        <label for="rumus">Rumus:</label>
+        <select id="rumus">
+            <option value="regula-falsi">Metode Regula Falsi</option>
+            <option value="secant">Metode Secant</option>
+        </select>
+        
+        <button onclick="hitung()" id="hitung">Hitung</button>
+    </div>
+
+    <div id="tabel"></div>
+
+    <canvas id="grafik"></canvas>
+
+    <script src="praktikum1.js"></script>
+
+</body>
+
+</html>
