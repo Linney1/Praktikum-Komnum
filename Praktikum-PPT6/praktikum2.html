@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Praktikum Komputasi Numerik</title>
-    <link rel="stylesheet" href="praktikum1.css">
+    <link rel="stylesheet" href="praktikum2.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 
@@ -15,46 +15,91 @@
         <h1>Praktikum Komputasi Numerik</h1>
         <h2>Kelompok 7</h2>
         <h3>
-            <p>I Dewa Gede Putra Susila - 5025251196</p>
-            <p>Muhammad Raffy Adika P.R. - 5025251229</p>
-            <p>Althof Rahmatullah - 5025251204</p>
+            <p>I Dewa Gede Putra Susila — 5025251196</p>
+            <p>Muhammad Raffy Adika P.R. — 5025251229</p>
+            <p>Althof Rahmatullah — 5025251204</p>
         </h3>
     </div>
 
-
-    <div class="input">
-        <label for="func">f(x):</label>
-        <input type="text" id="func">
-
-        <div class="row">
-            <label for="x1">x<sub>1</sub>:</label>
-            <input type="number" id="x1">
-
-            <label for="x2">x<sub>2</sub>:</label>
-            <input type="number" id="x2">
-
-            <label for="iterasi">Iterasi:</label>
-            <input type="number" id="iterasi">
-
-            <label for="presisi">Presisi:</label>
-            <input type="number" id="presisi">
-        </div>
-
-        <label for="rumus">Rumus:</label>
-        <select id="rumus">
-            <option value="regula-falsi">Metode Regula Falsi</option>
-            <option value="secant">Metode Secant</option>
-        </select>
-        
-        <button onclick="hitung()" id="hitung">Hitung</button>
+    <div class="info-box">
+        <strong>Kelemahan Metode Trapezoidal:</strong> membutuhkan jumlah interval yang sangat besar untuk mencapai
+        akurasi tinggi, karena error-nya hanya berkurang sebanding dengan O(h²).
+        <br><br>
+        <strong>Metode Romberg</strong> mengatasi hal ini dengan Richardson Extrapolation — menggabungkan hasil
+        trapesium berlipat (n=1,2,4,8,...) secara diagonal hingga konvergen jauh lebih cepat, tanpa perlu fungsi
+        turunan.
     </div>
 
-    <div id="tabel"></div>
+    <!-- INPUT -->
+    <div class="input-box">
+        <label for="func">f(x):</label>
+        <input type="text" id="func" placeholder="Contoh: x*x, Math.sin(x), Math.exp(x)">
 
-    <canvas id="grafik"></canvas>
+        <div class="row">
+            <label for="a">a (batas bawah):</label>
+            <input type="text" id="a" value="0">
 
-    <script src="praktikum1.js"></script>
+            <label for="b">b (batas atas):</label>
+            <input type="text" id="b" value="1">
 
+            <label for="level">Level Romberg (n):</label>
+            <input type="number" id="level" value="4" min="1" max="8">
+
+            <label for="presisi">Presisi:</label>
+            <input type="number" id="presisi" value="6" min="0" max="10">
+        </div>
+
+        <div class="row" style="grid-template-columns: auto 1fr; margin-top: 0;">
+            <label for="nTrap">Interval Trapesium:</label>
+            <input type="number" id="nTrap" value="8" min="1" max="512" style="width:100%;margin:0">
+        </div>
+
+        <button onclick="hitung()" id="hitung">Hitung & Bandingkan</button>
+    </div>
+
+    <!-- TAB NAV -->
+    <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('perbandingan')">Perbandingan</button>
+        <button class="tab-btn" onclick="switchTab('romberg')">Tabel Romberg</button>
+        <button class="tab-btn" onclick="switchTab('trapesium')">Tabel Trapesium</button>
+        <button class="tab-btn" onclick="switchTab('grafik')">Grafik</button>
+    </div>
+
+    <!-- TAB: PERBANDINGAN -->
+    <div class="tab-panel active" id="tab-perbandingan">
+        <div id="winner-box" class="winner-box"></div>
+        <div class="comparison-grid">
+            <div class="comparison-card trap">
+                <h3>Metode Trapezoidal</h3>
+                <div class="val" id="trap-val">—</div>
+                <div class="sub" id="trap-sub"></div>
+                <div class="badges" id="trap-badges"></div>
+            </div>
+            <div class="comparison-card romb">
+                <h3>Metode Romberg</h3>
+                <div class="val" id="romb-val">—</div>
+                <div class="sub" id="romb-sub"></div>
+                <div class="badges" id="romb-badges"></div>
+            </div>
+        </div>
+        <div class="tabel-wrap" id="tabel-perbandingan"></div>
+    </div>
+
+    <!-- TAB: ROMBERG -->
+    <div class="tab-panel" id="tab-romberg">
+        <div class="tabel-wrap" id="tabel-romberg"></div>
+    </div>
+
+    <!-- TAB: TRAPESIUM -->
+    <div class="tab-panel" id="tab-trapesium">
+        <div class="tabel-wrap" id="tabel-trapesium"></div>
+    </div>
+
+    <!-- TAB: GRAFIK -->
+    <div class="tab-panel" id="tab-grafik">
+        <canvas id="grafik"></canvas>
+    </div>
+
+    <script src="praktikum2.js"></script>
 </body>
-
 </html>
