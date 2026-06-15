@@ -1,5 +1,11 @@
-# Praktikum-Komnum
-- Praktikum PPT 2 & PPT 3  
+## Praktikum Komnum - Kelompok 7
+- PPT 2 & 3
+
+|    NRP     |           Nama             |
+| :--------: |       :------------:       |
+| 5025251196 | I Dewa Gede Putra Susila   |
+| 5025251229 | Muhammad Raffy Adika P.R.  |
+| 5025251204 | Althof Rahmatulla          |
 
 ## Penjelasan Singkat
 
@@ -28,15 +34,15 @@ Agar fungsi dapat diproses dengan benar oleh sistem, penulisan fungsi harus meng
 
 ## Contoh Input
 
-![Gambar input](Praktikum-PPT2-PPT3/image/input_p1.png)
+![Gambar input](image/input_p1.png)
 
 ## Contoh Output
 
-![Gambar Output](Praktikum-PPT2-PPT3/image/output_tabel_p1.png)
+![Gambar Output](image/output_tabel_p1.png)
 
 ## Grafik
 
-![Gambar Output](Praktikum-PPT2-PPT3/image/output_grafik_p1.png)
+![Gambar Output](image/output_grafik_p1.png)
 
 
 
