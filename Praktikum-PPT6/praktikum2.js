@@ -5,6 +5,12 @@ function switchTab(name) {
     event.target.classList.add('active');
 }
 
+// Error relatif: |sekarang - sebelumnya| / |sekarang| * 100
+function errorPersen(current, previous) {
+    if (!isFinite(current) || current === 0) return '—';
+    return (Math.abs(current - previous) / Math.abs(current) * 100).toFixed(4) + '%';
+}
+
 function hitung() {
     // PENGAMBILAN DATA
     let funcStr = document.getElementById("func").value.trim();
@@ -13,7 +19,7 @@ function hitung() {
         return;
     }
 
-    let f = function(x) {
+    let f = function (x) {
         try {
             return eval(funcStr);
         } catch {
@@ -97,7 +103,14 @@ function hitung() {
     }
 
     let hasilRomb = R[n][n];
-    let errorEst = Math.abs(R[n][n] - R[n][n - 1]);
+
+    // Error estimasi Romberg dalam persen
+    let errorEstRombStr = errorPersen(R[n][n], R[n][n - 1]);
+
+    // Error estimasi Trapesium dalam persen
+    let errorEstTrapStr = trapResults.length >= 2
+        ? errorPersen(trapResults[trapResults.length - 1].result, trapResults[trapResults.length - 2].result)
+        : '—';
 
     // =============================================
     // TAB PERBANDINGAN
@@ -109,11 +122,12 @@ function hitung() {
 
     document.getElementById("trap-badges").innerHTML =
         `<span class="badge-yellow">Interval: ${nTrap}</span>
-         <span class="badge-yellow">h = ${((b - a) / nTrap).toFixed(4)}</span>`;
+         <span class="badge-yellow">h = ${((b - a) / nTrap).toFixed(4)}</span>
+         <span class="badge-yellow">Error: ${errorEstTrapStr}</span>`;
 
     document.getElementById("romb-badges").innerHTML =
         `<span class="badge">Level: ${n}</span>
-         <span class="badge">Error Est: ${errorEst.toExponential(2)}</span>
+         <span class="badge">Error Est: ${errorEstRombStr}</span>
          <span class="badge">Subinterval: ${Math.pow(2, n)}</span>`;
 
     let selisih = Math.abs(hasilTrap - hasilRomb);
@@ -125,37 +139,40 @@ function hitung() {
          Romberg menggunakan hanya <strong>${Math.pow(2, n)} subinterval</strong> untuk konvergen,
          sedangkan Trapesium menggunakan <strong>${nTrap} interval</strong> dengan akurasi yang lebih rendah.`;
 
+    // Tabel perbandingan
     let tblCmp = `<table>
-                <tr>
-                    <th>Metode</th>
-                    <th>Jumlah Interval</th>
-                    <th>Hasil</th>
-                    <th>Error Estimasi</th>
-                </tr>
-                <tr>
-                    <td style="color:#f59e0b;font-weight:bold">Trapezoidal</td>
-                    <td>${nTrap}</td>
-                    <td>${hasilTrap.toFixed(presisi)}</td>
-                    <td>${trapResults.length >= 2 ? Math.abs(trapResults[trapResults.length - 1].result - trapResults[trapResults.length - 2].result).toExponential(2) : '—'}</td>
-                </tr>
-                <tr>
-                    <td style="color:#34d399;font-weight:bold">Romberg</td>
-                    <td>${Math.pow(2, n)}</td>
-                    <td class="result">${hasilRomb.toFixed(presisi)}</td>
-                    <td>${errorEst.toExponential(2)}</td>
-                </tr>
-            </table>`;
+        <tr>
+            <th>Metode</th>
+            <th>Jumlah Interval</th>
+            <th>Hasil</th>
+            <th>Error Estimasi (%)</th>
+        </tr>
+        <tr>
+            <td style="color:#f59e0b;font-weight:bold">Trapezoidal</td>
+            <td>${nTrap}</td>
+            <td>${hasilTrap.toFixed(presisi)}</td>
+            <td>${errorEstTrapStr}</td>
+        </tr>
+        <tr>
+            <td style="color:#34d399;font-weight:bold">Romberg</td>
+            <td>${Math.pow(2, n)}</td>
+            <td class="result">${hasilRomb.toFixed(presisi)}</td>
+            <td>${errorEstRombStr}</td>
+        </tr>
+    </table>`;
 
     document.getElementById("tabel-perbandingan").innerHTML = tblCmp;
 
-    let tblRomb = `<table>
-                <tr><th>i / j</th>`;
+    // =============================================
+    // TAB ROMBERG
+    // =============================================
+    let tblRomb = `<table><tr><th>i / j</th>`;
 
     for (let j = 0; j <= n; j++) {
         tblRomb += `<th>R[i][${j}]${j === 0 ? ' <span class="badge">Trapesium</span>' : ''}</th>`;
     }
 
-    tblRomb += `</tr>`;
+    tblRomb += `<th>Error Est (%)</th></tr>`;
 
     for (let i = 0; i <= n; i++) {
         tblRomb += `<tr><td><strong>${i}</strong></td>`;
@@ -172,38 +189,46 @@ function hitung() {
             }
         }
 
-        tblRomb += `</tr>`;
+        // Error per baris: |R[i][i] - R[i-1][i-1]| / |R[i][i]| * 100
+        let rowErr = i >= 1 ? errorPersen(R[i][i], R[i - 1][Math.min(i - 1, n)]) : '—';
+        tblRomb += `<td style="color:#a78bfa">${rowErr}</td></tr>`;
     }
 
     tblRomb += `</table>`;
     document.getElementById("tabel-romberg").innerHTML = tblRomb;
 
+    // =============================================
+    // TAB TRAPESIUM
+    // =============================================
     let tblTrap = `<table>
-                <tr>
-                    <th>n (interval)</th>
-                    <th>h</th>
-                    <th>Hasil</th>
-                    <th>Perubahan</th>
-                </tr>`;
+        <tr>
+            <th>n (interval)</th>
+            <th>h</th>
+            <th>Hasil</th>
+            <th>Error Estimasi (%)</th>
+        </tr>`;
 
     for (let i = 0; i < trapResults.length; i++) {
         let perubahan = i === 0
             ? '—'
-            : Math.abs(trapResults[i].result - trapResults[i - 1].result).toExponential(2);
+            : errorPersen(trapResults[i].result, trapResults[i - 1].result);
 
         let isLast = i === trapResults.length - 1;
 
         tblTrap += `<tr>
-                    <td>${trapResults[i].n}</td>
-                    <td>${trapResults[i].h.toFixed(presisi)}</td>
-                    <td ${isLast ? 'class="result"' : ''}>${trapResults[i].result.toFixed(presisi)}</td>
-                    <td>${perubahan}</td>
-                </tr>`;
+            <td>${trapResults[i].n}</td>
+            <td>${trapResults[i].h.toFixed(presisi)}</td>
+            <td ${isLast ? 'class="result"' : ''}>${trapResults[i].result.toFixed(presisi)}</td>
+            <td>${perubahan}</td>
+        </tr>`;
     }
 
     tblTrap += `</table>`;
     document.getElementById("tabel-trapesium").innerHTML = tblTrap;
 
+    // =============================================
+    // GRAFIK
+    // =============================================
     let steps = 300;
     let dx = (b - a) / steps;
 
