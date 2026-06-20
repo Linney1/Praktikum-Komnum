@@ -39,10 +39,9 @@ Penulisan fungsi matematika pada kolom input `f(x)` memanfaatkan fungsi `eval()`
 ---
 
 ## Panduan Penggunaan
-1. Buka file `praktikum2.html` pada peramban web (browser) Anda.
-2. Masukkan rumus fungsi pada kolom **f(x)** (misal: `x**2` atau `Math.sin(x)`).
-3. Tentukan nilai **Batas Bawah (a)** dan **Batas Atas (b)**.
-4. Masukkan parameter **Level Romberg (n)**, jumlah **Interval Trapesium**, serta tingkat **Presisi** angka di belakang koma.
-5. Klik tombol **Hitung & Bandingkan** untuk memproses data.
-6. Gunakan navigasi tab untuk berpindah antara panel Perbandingan, Tabel Romberg, Tabel Trapesium, dan Grafik.
+1. Masukkan rumus fungsi pada kolom **f(x)** (misal: `x**2` atau `Math.sin(x)`).
+2. Tentukan nilai **Batas Bawah (a)** dan **Batas Atas (b)**.
+3. Masukkan parameter **Level Romberg (n)**, jumlah **Interval Trapesium**, serta tingkat **Presisi** angka di belakang koma.
+4. Klik tombol **Hitung & Bandingkan** untuk memproses data.
+5. Gunakan navigasi tab untuk berpindah antara panel Perbandingan, Tabel Romberg, Tabel Trapesium, dan Grafik.
 
